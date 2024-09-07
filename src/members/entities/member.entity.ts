@@ -1,6 +1,7 @@
 import { MemberOnProject } from '@prisma/client';
 
 export class Member implements MemberOnProject {
+  id: bigint = BigInt(0);
   userId: bigint = BigInt(0);
   name: string = '';
   email: string = '';
