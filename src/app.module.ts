@@ -11,7 +11,6 @@ import { UsersModule } from './users/users.module';
 import { SessionModule } from './session/session.module';
 import { AccessTokenGuard } from './common/guards/access-token.guard';
 import { ProjectsModule } from './projects/projects.module';
-import { MembersModule } from './members/members.module';
 import { TasksModule } from './tasks/tasks.module';
 import { TaskStatusesModule } from './task-statuses/task-statuses.module';
 
@@ -26,7 +25,6 @@ import { TaskStatusesModule } from './task-statuses/task-statuses.module';
     UsersModule,
     SessionModule,
     ProjectsModule,
-    MembersModule,
     TasksModule,
     TaskStatusesModule,
   ],
