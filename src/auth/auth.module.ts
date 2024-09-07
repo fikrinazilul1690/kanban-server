@@ -12,4 +12,4 @@ import { SessionModule } from 'src/session/session.module';
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],
   imports: [UsersModule, SessionModule, JwtModule.register({})],
 })
-export class AuthModule { }
+export class AuthModule {}
