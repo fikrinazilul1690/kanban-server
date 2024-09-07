@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        BigInt            @id @default(autoincrement()) @db.BigInt
+  name      String
+  email     String            @unique
+  password  String
+  createdAt DateTime          @default(now()) @db.Timestamptz(3)
+  projects  Project[]
+  members   MemberOnProject[]
+  sessions  Session[]
+
+  @@map("users")
+}
+
+model Project {
+  id          BigInt            @id @default(autoincrement())
+  icon        String            @default("📃")
+  title       String
+  slug        String            @unique
+  description String?
+  owner       User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     BigInt
+  createdAt   DateTime          @default(now()) @db.Timestamptz(3)
+  updateAt    DateTime          @updatedAt @db.Timestamptz(3)
+  statuses    Status[]
+  members     MemberOnProject[]
+  tasks       Task[]
+
+  @@map("projects")
+}
+
+// enum RoleType {
+//   UX
+//   UI
+//   FRONTEND
+//   BACKEND
+//   LEAD
+// }
+
+model MemberOnProject {
+  id        BigInt  @id @default(autoincrement())
+  member    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    BigInt
+  name      String
+  email     String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId BigInt
+  role      String
+
+  @@unique([userId, projectId])
+  @@map("member_on_project")
+}
+
+model Status {
+  id          BigInt  @id @default(autoincrement())
+  name        String
+  slug        String
+  defaultSlug String?
+  order       Int     @default(autoincrement())
+  color       String  @db.VarChar(7)
+  isClosed    Boolean @default(false)
+  projectId   BigInt
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@unique([slug, projectId])
+  @@unique([defaultSlug, projectId])
+  @@unique([color, projectId])
+  @@map("statuses")
+}
+
+model Task {
+  id          BigInt   @id @default(autoincrement())
+  subject     String
+  description String?
+  order       Int      @default(autoincrement())
+  statusId    BigInt
+  status      Status   @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  projectId   BigInt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  @@map("tasks")
+}
+
+model Session {
+  id           String  @id @db.VarChar(24)
+  refreshToken String
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       BigInt
+  isRevoke     Boolean @default(false)
+
+  @@map("sessions")
+}
