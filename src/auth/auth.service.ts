@@ -80,6 +80,7 @@ export class AuthService {
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     const { sessionId, userId, refreshToken } = refreshTokenDto;
+    console.log('refresh token: ', userId);
     const session = await this.sessionService.findOne(sessionId);
 
     if (!session) throw new UnauthorizedException('Access Denied');
