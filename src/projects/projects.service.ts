@@ -89,7 +89,7 @@ export class ProjectsService {
         );
       }
 
-      return await tx.memberOnProject.delete({ where: { id: project.id } });
+      return await tx.project.delete({ where: { id: project.id } });
     });
   }
 
